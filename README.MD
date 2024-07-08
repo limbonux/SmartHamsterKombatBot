@@ -60,12 +60,12 @@ TON:
 `UQATbChkxTXjNepmCOKKH9Hv5t2cnkGfQOBF-w159gJVWJGQ`
 
 <hr>
-
+<!
 ## 📽️ Tutorial and Test
 
 <a href="https://www.youtube.com/">
   <img align="center" src="https://raw.githubusercontent.com/limbonux/SmartHamsterKombatBot/main/thumbnail.png" alt="Youtube Video" />
-</a>
+</a>-->
 
 ---
 
