@@ -67,7 +67,7 @@ TON:
   <img align="center" src="https://raw.githubusercontent.com/limbonux/SmartHamsterKombatBot/main/thumbnail.png" alt="Youtube Video" />
 </a>
 -->
----
+
 # Encountered an Issue or Problem?
 
 Feel free to [open a new issue](https://github.com/limbonux/SmartHamsterKombatBot/issues) if you encounter any problems or start a new discussion in the [discussions](https://github.com/limbonux/SmartHamsterKombatBot/discussions) section.
