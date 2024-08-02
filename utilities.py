@@ -2,7 +2,7 @@
 # Date: 2024
 # Github: https://github.com/limbonux
 import base64
-import requests
+
 
 # Sort upgrades by best profit per hour (profitPerHourDelta / price)
 # You can change this to sort by price, profitPerHourDelta, level, etc.
@@ -10,6 +10,10 @@ def SortUpgrades(upgrades, max_budget):
     upgrades = [item for item in upgrades if item["price"] <= max_budget]
     upgrades.sort(key=lambda x: x["price"] / x["profitPerHourDelta"])
     return upgrades
+
+
+def CalculateCardProfitCoefficient(card):
+    return card["price"] / card["profitPerHourDelta"]
 
 
 # Convert number to string with k, m, b, t to make it more readable
