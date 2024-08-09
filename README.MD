@@ -13,24 +13,29 @@ Smart Hamster Kombat Bot is a Python-based automation tool specifically designed
 
 <hr>
 
-✅ Tested and confirmed to work as of `6 July 2024`. ✅
+✅ Tested and confirmed to work as of `29 July 2024`. ✅
 
 #### ⭐ If you find this project useful, please consider giving it a star! ⭐
+
+<a href="https://github.com/limbonux/SmartHamsterKombatBot/stargazers"><img align="center" src="https://raw.githubusercontent.com/limbonux/SmartHamsterKombatBot/main/github_star.png" alt="github_star" /></a>
 
 <hr>
 
 ## 🗒️ Features
 
-- Get list of cards and automatically buy best cards based on return value (This feature allows you to retrieve a list of available cards and automatically purchase the best cards based on their return value. The return value is determined by comparing the price of the card with its profit per hour. By automating this process, you can optimize your card selection and maximize your earnings), (5 July 2024)
-- Fixed some issues and added the ability to perform all of your taps. (4 July 2024)
+- Get the list of cards and automatically buy the best cards based on return value (This feature allows you to retrieve a list of available cards and automatically purchase the best cards based on their return value. The return value is determined by comparing the card's price with its profit per hour. By automating this process, you can optimize your card selection and maximize your earnings), (10 Jun 2024)
+- Fixed some issues and added the ability to perform all of your taps. (06 August 2024)
 
-- **Added support for multi-accounts**. (July 5, 2024)
-- Implemented a timer to periodically check the accounts. (July 5, 2024)
-- Support setting a specific **proxy** for each account. (July 5, 2024)
-- Added auto decoding and claiming of daily ciphers. (July 5, 2024)
-- Auto claiming daily tasks added, **Version 2 released**. (July 7, 2024)
-- Auto complete other tasks (Youtube/Twitter and etc). (July 7, 2024)
-- You can add Telegram Bot to receive logs inside telegram. (July 7, 2024)
+- **Added support for multi-accounts**. (June 12, 2024)
+- Implemented a timer to periodically check the accounts. (June 12, 2024)
+- Support setting a specific **proxy** for each account. (June 12, 2024)
+- Added auto decoding and claiming of daily ciphers. (June 12, 2024)
+- Auto claiming daily tasks added, **Version 2 released**. (June 12, 2024)
+- Autocomplete other tasks (Youtube/Twitter and etc). (June 20, 2024)
+- You can add a Telegram Bot to receive logs inside Telegram. (June 20, 2024)
+- Automatically complete Hamster Kombat **Mini-Games** to earn keys. (July 21, 2024)
+- Playground `Bike Ride 3D` added. (July 29, 2024)
+- Playground `My Clone Army`, `Chain Cube 2024`, `Train Miner` added. (August 06, 2024)
 
 <hr>
 
@@ -40,7 +45,7 @@ Smart Hamster Kombat Bot is a Python-based automation tool specifically designed
 2. Install the required packages,
 
 ```bash
-pip install requests colorlog marshal
+pip install requests colorlog
 ```
 
 3. Add your accounts
