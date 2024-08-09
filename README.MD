@@ -15,6 +15,8 @@ Smart Hamster Kombat Bot is a Python-based automation tool specifically designed
 
 ✅ Tested and confirmed to work as of `29 July 2024`. ✅
 
+<img align="center" src="https://raw.githubusercontent.com/limbonux/SmartHamsterKombatBot/main/Screenshot.png" alt="Screenshot" />
+
 #### ⭐ If you find this project useful, please consider giving it a star! ⭐
 
 <a href="https://github.com/limbonux/SmartHamsterKombatBot/stargazers"><img align="center" src="https://raw.githubusercontent.com/limbonux/SmartHamsterKombatBot/main/github_star.png" alt="github_star" /></a>
