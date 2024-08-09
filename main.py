@@ -22,20 +22,6 @@ from config import *
 # To edit the account configuration, you can modify the config.py file.
 # To edit the account configuration, you can modify the config.py file.
 # To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
 
 SupportedPromoGames = {
     "43e35910-c168-4634-ad4f-52fd764a843f": {
