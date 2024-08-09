@@ -11,15 +11,93 @@ import time
 import requests
 from colorlog import ColoredFormatter
 import uuid
-from config import *
 from utilities import *
+from config import *
+
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+# To edit the account configuration, you can modify the config.py file.
+
+SupportedPromoGames = {
+    "43e35910-c168-4634-ad4f-52fd764a843f": {
+        "name": "Bike Ride 3D in Hamster FAM",
+        "appToken": "d28721be-fd2d-4b45-869e-9f253b554e50",
+        "promoId": "43e35910-c168-4634-ad4f-52fd764a843f",
+        "delay": 20,
+        "retry_delay": 20,
+    },
+    "fe693b26-b342-4159-8808-15e3ff7f8767": {
+        "name": "My Clone Army",
+        "appToken": "74ee0b5b-775e-4bee-974f-63e7f4d5bacb",
+        "promoId": "fe693b26-b342-4159-8808-15e3ff7f8767",
+        "delay": 120,
+        "retry_delay": 20,
+    },
+    "b4170868-cef0-424f-8eb9-be0622e8e8e3": {
+        "name": "Chain Cube 2024",
+        "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
+        "promoId": "b4170868-cef0-424f-8eb9-be0622e8e8e3",
+        "delay": 20,
+        "retry_delay": 20,
+    },
+    "c4480ac7-e178-4973-8061-9ed5b2e17954": {
+        "name": "Train Miner",
+        "appToken": "82647f43-3f87-402d-88dd-09a90025313f",
+        "promoId": "c4480ac7-e178-4973-8061-9ed5b2e17954",
+        "delay": 120,
+        "retry_delay": 20,
+    },
+}
+
+# ---------------------------------------------#
+# Telegram Logging
+# By enabling this feature, you will receive logs in your Telegram account.
+# To use this feature, you need to create a bot and obtain the token from @BotFather.
+# Note: Only important logs are sent to Telegram, feel free to include more logs as needed.
+# You can also use this feature to receive logs from a bot running on a server.
+# If you don't want to use this feature, set "is_active" to False and leave "bot_token" and "uid" fields empty.
+# This feature is optional, and you can disable it by setting "is_active" to False.
+telegramBotLogging = {
+    "is_active": False,  # Set it to True if you want to use it, and make sure to fill out the below fields
+    "bot_token": "",  # HTTP API access token from https://t.me/BotFather ~ Start your bot after creating it
+    # Configure the what you want to receive logs from the bot
+    "messages": {
+        "general_info": True,  # General information
+        "account_info": True,  # Account information
+        "http_errors": False,  # HTTP errors
+        "other_errors": False,  # Other errors
+        "daily_cipher": True,  # Daily cipher
+        "daily_task": False,  # Daily task
+        "upgrades": True,  # Upgrades
+    },
+}
 
 # ---------------------------------------------#
 # Logging configuration
 LOG_LEVEL = logging.DEBUG
-LOGFORMAT = "%(log_color)s[Smart HamsterKombat Bot]%(reset)s[%(log_color)s%(levelname)s%(reset)s] %(log_color)s%(message)s%(reset)s"
+# Include date and time in the log format
+LOGFORMAT = "%(log_color)s[Smart HamsterKombat Bot]%(reset)s[%(log_color)s%(levelname)s%(reset)s] %(asctime)s %(log_color)s%(message)s%(reset)s"
 logging.root.setLevel(LOG_LEVEL)
-formatter = ColoredFormatter(LOGFORMAT)
+formatter = ColoredFormatter(LOGFORMAT, "%Y-%m-%d %H:%M:%S")  # Specify the date/time format
 stream = logging.StreamHandler()
 stream.setLevel(LOG_LEVEL)
 stream.setFormatter(formatter)
@@ -117,11 +195,11 @@ class HamsterKombatAccount:
                 self.SendTelegramLog(
                     f"[{self.account_name}] Invalid method: {method}", "http_errors"
                 )
-                return False
+                return None
 
             if response.status_code != validStatusCodes:
                 if ignore_errors:
-                    return False
+                    return None
 
                 log.error(
                     f"[{self.account_name}] Status code is not {validStatusCodes}"
@@ -131,7 +209,7 @@ class HamsterKombatAccount:
                     f"[{self.account_name}] Status code is not {validStatusCodes}",
                     "http_errors",
                 )
-                return False
+                return None
 
             if method == "OPTIONS":
                 return True
@@ -766,25 +844,22 @@ class HamsterKombatAccount:
             if promo[
                 "promoId"
             ] in SupportedPromoGames and self.CheckPlayGroundGameState(promo, response):
-                if promo["promoId"] == "43e35910-c168-4634-ad4f-52fd764a843f":
+                promoData = SupportedPromoGames[promo["promoId"]]
+                log.info(
+                    f"[{self.account_name}] Starting {promoData['name']} Playground game..."
+                )
+                time.sleep(1)
+                promoCode = self.GetPlayGroundGameKey(promoData)
+                if promoCode is not None:
                     log.info(
-                        f"[{self.account_name}] Starting Bike Ride 3D in Hamster FAM..."
+                        f"\033[1;34m[{self.account_name}] {promoData['name']} key: {promoCode}\033[0m"
                     )
                     time.sleep(2)
-                    promoCode = self.GetPlayGroundBikeRideKey(promo["promoId"])
-                    if promoCode is not None:
-                        log.info(
-                            f"[{self.account_name}] Bike Ride 3D in Hamster FAM key: {promoCode}"
-                        )
-                        time.sleep(2)
-                        log.info(
-                            f"[{self.account_name}] Claiming Bike Ride 3D in Hamster FAM..."
-                        )
-
-                        self.ClaimPlayGroundGame(promoCode)
-                        log.info(
-                            f"[{self.account_name}] Playground game claimed successfully."
-                        )
+                    log.info(f"[{self.account_name}] Claiming {promoData['name']}...")
+                    self.ClaimPlayGroundGame(promoCode)
+                    log.info(
+                        f"[{self.account_name}] {promoData['name']} claimed successfully."
+                    )
 
     def ClaimPlayGroundGame(self, promoCode):
         url = "https://api.hamsterkombatgame.io/clicker/apply-promo"
@@ -812,11 +887,11 @@ class HamsterKombatAccount:
         # Send POST request
         return self.HttpRequest(url, headers, "POST", 200, payload)
 
-    def GetPlayGroundBikeRideKey(self, promoID):
-        appToken = "d28721be-fd2d-4b45-869e-9f253b554e50"
+    def GetPlayGroundGameKey(self, promoData):
+        appToken = promoData["appToken"]
         clientId = f"{int(time.time() * 1000)}-{''.join(str(random.randint(0, 9)) for _ in range(19))}"
 
-        log.info(f"[{self.account_name}] Getting Bike Ride 3D in Hamster FAM key...")
+        log.info(f"[{self.account_name}] Getting {promoData['name']} key...")
         url = "https://api.gamepromo.io/promo/login-client"
 
         headers = {
@@ -830,32 +905,32 @@ class HamsterKombatAccount:
             {
                 "appToken": appToken,
                 "clientId": clientId,
-                "clientOrigin": "deviceid",
+                "clientOrigin": "ios",
             }
         )
 
         response = self.HttpRequest(url, headers, "POST", 200, payload)
         if response is None:
-            log.error(
-                f"[{self.account_name}] Unable to get Bike Ride 3D in Hamster FAM key."
-            )
+            log.error(f"[{self.account_name}] Unable to get {promoData['name']} key.")
             self.SendTelegramLog(
-                f"[{self.account_name}] Unable to get Bike Ride 3D in Hamster FAM key.",
+                f"[{self.account_name}] Unable to get {promoData['name']} key.",
                 "other_errors",
             )
             return None
 
         if "clientToken" not in response:
-            log.error(
-                f"[{self.account_name}] Unable to get Bike Ride 3D in Hamster FAM key."
-            )
+            log.error(f"[{self.account_name}] Unable to get {promoData['name']} key.")
             self.SendTelegramLog(
-                f"[{self.account_name}] Unable to get Bike Ride 3D in Hamster FAM key.",
+                f"[{self.account_name}] Unable to get {promoData['name']} key.",
                 "other_errors",
             )
             return None
 
         clientToken = response["clientToken"]
+
+        time.sleep(promoData["delay"] + random.randint(1, 5))
+
+        log.info(f"[{self.account_name}] Registering event for {promoData['name']}...")
 
         url = "https://api.gamepromo.io/promo/register-event"
 
@@ -869,12 +944,14 @@ class HamsterKombatAccount:
 
         response = None
 
-        while True:
+        retryCount = 0
+        while retryCount < 5:
+            retryCount += 1
             eventID = str(uuid.uuid4())
 
             payload = json.dumps(
                 {
-                    "promoId": promoID,
+                    "promoId": promoData["promoId"],
                     "eventId": eventID,
                     "eventOrigin": "undefined",
                 }
@@ -883,14 +960,16 @@ class HamsterKombatAccount:
             response = self.HttpRequest(url, headers, "POST", 200, payload, True)
 
             if response is None or not isinstance(response, dict):
-                time.sleep(5)
+                time.sleep(promoData["delay"] + random.randint(1, 5))
                 continue
 
             if not response.get("hasCode", False):
-                time.sleep(5)
+                time.sleep(promoData["delay"] + random.randint(1, 5))
                 continue
 
             break
+
+        log.info(f"[{self.account_name}] Event registered successfully.")
 
         url = "https://api.gamepromo.io/promo/create-code"
 
@@ -904,17 +983,15 @@ class HamsterKombatAccount:
 
         payload = json.dumps(
             {
-                "promoId": promoID,
+                "promoId": promoData["promoId"],
             }
         )
 
         response = self.HttpRequest(url, headers, "POST", 200, payload)
         if response is None:
-            log.error(
-                f"[{self.account_name}] Unable to get Bike Ride 3D in Hamster FAM key."
-            )
+            log.error(f"[{self.account_name}] Unable to get {promoData['name']} key.")
             self.SendTelegramLog(
-                f"[{self.account_name}] Unable to get Bike Ride 3D in Hamster FAM key.",
+                f"[{self.account_name}] Unable to get {promoData['name']} key.",
                 "other_errors",
             )
             return None
@@ -924,11 +1001,9 @@ class HamsterKombatAccount:
             or response.get("promoCode") is None
             or response.get("promoCode") == ""
         ):
-            log.error(
-                f"[{self.account_name}] Unable to get Bike Ride 3D in Hamster FAM key."
-            )
+            log.error(f"[{self.account_name}] Unable to get {promoData['name']} key.")
             self.SendTelegramLog(
-                f"[{self.account_name}] Unable to get Bike Ride 3D in Hamster FAM key.",
+                f"[{self.account_name}] Unable to get {promoData['name']} key."
                 "other_errors",
             )
             return None
@@ -953,7 +1028,7 @@ class HamsterKombatAccount:
                 and state["receiveKeysToday"] >= promo["keysPerDay"]
             ):
                 log.info(
-                    f"[{self.account_name}] Playground game {SupportedPromoGames[promo['promoId']]} already claimed."
+                    f"[{self.account_name}] Playground game {SupportedPromoGames[promo['promoId']]['name']} already claimed."
                 )
                 return False
 
@@ -991,7 +1066,7 @@ class HamsterKombatAccount:
         if (
             AccountConfigData is None
             or AccountConfigData is False
-            or "clickerConfig" not in AccountConfigData
+#            or "clickerConfig" not in AccountConfigData
         ):
             log.error(f"[{self.account_name}] Unable to get account config data.")
             self.SendTelegramLog(
@@ -1000,7 +1075,6 @@ class HamsterKombatAccount:
             )
             return
 
-        self.StartPlaygroundGame()
         DailyCipher = ""
         if (
             self.config["auto_get_daily_cipher"]
@@ -1041,18 +1115,12 @@ class HamsterKombatAccount:
             self.SendTelegramLog(
                 f"[{self.account_name}] Failed to get tasks list.", "other_errors"
             )
-            return
 
         log.info(f"[{self.account_name}] Getting account airdrop tasks...")
         airdropTasksResponse = self.GetListAirDropTasksRequest()
 
         if airdropTasksResponse is None:
             log.error(f"[{self.account_name}] Failed to get airdrop tasks list.")
-            self.SendTelegramLog(
-                f"[{self.account_name}] Failed to get airdrop tasks list.",
-                "other_errors",
-            )
-            return
 
         log.info(f"[{self.account_name}] Getting account IP...")
         ipResponse = self.IPRequest()
@@ -1096,7 +1164,12 @@ class HamsterKombatAccount:
                     "daily_cipher",
                 )
 
-        if self.config["auto_get_daily_task"]:
+        if (
+            self.config["auto_get_daily_task"]
+            and tasksResponse is not None
+            and "tasks" in tasksResponse
+            and isinstance(tasksResponse["tasks"], list)
+        ):
             log.info(f"[{self.account_name}] Checking for daily task...")
             streak_days = None
             for task in tasksResponse["tasks"]:
@@ -1126,7 +1199,12 @@ class HamsterKombatAccount:
                     "daily_task",
                 )
 
-        if self.config["auto_get_task"]:
+        if (
+            self.config["auto_get_task"]
+            and tasksResponse is not None
+            and "tasks" in tasksResponse
+            and isinstance(tasksResponse["tasks"], list)
+        ):
             log.info(f"[{self.account_name}] Checking for available task...")
             selected_task = None
             for task in tasksResponse["tasks"]:
@@ -1168,6 +1246,8 @@ class HamsterKombatAccount:
             log.info(
                 f"[{self.account_name}] Account Balance Coins: {number_to_string(self.balanceCoins)}, Available Taps: {self.availableTaps}, Max Taps: {self.maxTaps}, Total Keys: {self.totalKeys}, Balance Keys: {self.balanceKeys}"
             )
+
+        self.StartPlaygroundGame()
 
         # Start buying upgrades
         if not self.config["auto_upgrade"]:
@@ -1295,7 +1375,6 @@ def RunAccounts():
         if AccountsRecheckTime > 0:
             log.error(f"Rechecking all accounts in {AccountsRecheckTime} seconds...")
             time.sleep(AccountsRecheckTime)
-
 
 def main():
     log.info("------------------------------------------------------------------------")
