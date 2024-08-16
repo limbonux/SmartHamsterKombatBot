@@ -38,6 +38,8 @@ Smart Hamster Kombat Bot is a Python-based automation tool specifically designed
 - Automatically complete Hamster Kombat **Mini-Games** to earn keys. (July 21, 2024)
 - Playground `Bike Ride 3D` added. (July 29, 2024)
 - Playground `My Clone Army`, `Chain Cube 2024`, `Train Miner` added. (August 06, 2024)
+- Playground `Merge Away` added. (August 15, 2024)
+- Playground `Twerk Race` added. (August 16, 2024)
 
 <hr>
 
