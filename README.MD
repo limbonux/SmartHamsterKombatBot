@@ -44,24 +44,35 @@ Smart Hamster Kombat Bot is a Python-based automation tool specifically designed
 <hr>
 
 ## 💻 Installation
-
-1. Install Python 3.
-2. Install the required packages,
-
+1. Install Git & Download the Project.
+```bash
+git clone https://github.com/limbonux/SmartHamsterKombatBot
+```
+2. Install Python 3.
+3. Install the required packages,
 ```bash
 pip install requests colorlog
 ```
 
-3. Add your accounts
+4. Add your accounts
 
+- Copy the `config.py.example` file to `config.py`. (`cp config.py.example config.py`)
 - Locate your `Authorization Bearer token` and place it in the `config.py` file. [How to Obtain a Token and Set Up the Bot?](https://www.youtube.com/)
 - [Find your device's UserAgent](https://github.com/limbonux/SmartHamsterKombatBot/blob/main/useful_files/user-agents.md) and place it in the `config.py` file.
 - Configure accounts
 
-4. Execute the command `py main.py`.
-5. Have fun!
+5. Execute the command `py main.py`.
+6. Have fun!
 
 <hr>
+## 💻 Update to the Latest Version
+
+This option only works if you have Git installed on your system and you downloaded the project using the command: `git clone https://github.com/limbonux/SmartHamsterKombatBot`. If you downloaded the project as a zip file, simply re-download and replace all files.
+
+1. Run the following command: `git pull origin main`
+2. Update the configuration file if needed.
+3. Start the project.
+
 
 💵 If you're a fan of our project and want to support us, consider donating crypto. Your support will help us improve and expand, providing even more value to our users. Thank you for your generosity! 💵
 
