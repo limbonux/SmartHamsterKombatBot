@@ -66,7 +66,8 @@ pip install requests colorlog
 
 <hr>
 
-<hr> 
+<hr>
+
 ## 💻 Update to the Latest Version
 
 This option only works if you have Git installed on your system and you downloaded the project using the command: `git clone https://github.com/limbonux/SmartHamsterKombatBot`. If you downloaded the project as a zip file, simply re-download and replace all files.
