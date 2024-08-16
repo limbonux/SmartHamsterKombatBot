@@ -73,6 +73,7 @@ This option only works if you have Git installed on your system and you download
 2. Update the configuration file if needed.
 3. Start the project.
 
+<hr> 
 
 💵 If you're a fan of our project and want to support us, consider donating crypto. Your support will help us improve and expand, providing even more value to our users. Thank you for your generosity! 💵
 
