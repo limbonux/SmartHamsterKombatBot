@@ -40,6 +40,8 @@ AccountList = [
             "wait_for_best_card": True,  # Recommended to keep it True for high-level accounts
             "enable_parallel_upgrades": True,  # Enable parallel card upgrades. This will buy cards in parallel if the best card is on cooldown. It should speed up the profit.
             "parallel_upgrades_max_price_per_hour": 1000,  # Cards with less than X coins per 1k will be bought
+            "show_num_buy_options": 0,  # Number of card buy options to show in the logs, ranked by best value, 0 disables this.
+            "max_promo_games_per_round": 3,  # Maximum number of promo games to play in a single round, 0 disables this.
         },
         # If you have enabled Telegram bot logging,
         # you can add your chat ID below to receive logs in your Telegram account.
@@ -78,6 +80,8 @@ AccountList = [
     #         "wait_for_best_card": True,  # Recommended to keep it True for high-level accounts
     #         "enable_parallel_upgrades": True,  # Enable parallel card upgrades. This will buy cards in parallel if the best card is on cooldown. It should speed up the profit.
     #         "parallel_upgrades_max_price_per_hour": 1000,  # Cards with less than X coins per 1k will be bought
+    #         "show_num_buy_options": 0,  # Number of card buy options to show in the logs, ranked by best value, 0 disables this.
+    #         "max_promo_games_per_round": 3,  # Maximum number of promo games to play in a single round, 0 disables this.
     #     },
     #     # If you have enabled Telegram bot logging,
     #     # you can add your chat ID below to receive logs in your Telegram account.
@@ -88,3 +92,28 @@ AccountList = [
     #     "telegram_chat_id": "",  # String - you can get it from https://t.me/chatIDrobot
     # },
 ]
+
+# ---------------------------------------------#
+# Telegram Logging
+# By enabling this feature, you will receive logs in your Telegram account.
+# To use this feature, you need to create a bot and obtain the token from @BotFather.
+# Note: Only important logs are sent to Telegram, feel free to include more logs as needed.
+# You can also use this feature to receive logs from a bot running on a server.
+# If you don't want to use this feature, set "is_active" to False and leave "bot_token" and "uid" fields empty.
+# This feature is optional, and you can disable it by setting "is_active" to False.
+telegramBotLogging = {
+    "is_active": False,  # Set it to True if you want to use it, and make sure to fill out the below fields
+    "bot_token": "",  # HTTP API access token from https://t.me/BotFather ~ Start your bot after creating it
+    # Configure the what you want to receive logs from the bot
+    "messages": {
+        "general_info": True,  # General information
+        "account_info": True,  # Account information
+        "http_errors": False,  # HTTP errors
+        "other_errors": False,  # Other errors
+        "daily_cipher": True,  # Daily cipher
+        "daily_task": False,  # Daily task
+        "upgrades": True,  # Upgrades
+    },
+}
+
+ConfigFileVersion = 1
