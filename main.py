@@ -12,23 +12,46 @@ import requests
 from colorlog import ColoredFormatter
 import uuid
 from utilities import *
-from config import *
 
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
-# To edit the account configuration, you can modify the config.py file.
+try:
+    from config import *
+except ImportError:
+    print("Config file not found.")
+    print("Create a copy of config.py.example and rename it to config.py")
+    print("And fill in the required fields.")
+    exit()
+
+if "ConfigFileVersion" not in locals() or ConfigFileVersion != 1:
+    print("Invalid config file version.")
+    print("Please update the config file to the latest version.")
+    print("Create a copy of config.py.example and rename it to config.py")
+    print("And fill in the required fields.")
+    exit()
+
+# ---------------------------------------------#
+# Logging configuration
+LOG_LEVEL = logging.DEBUG
+# Include date and time in the log format
+LOGFORMAT = "%(log_color)s[Smart HamsterKombat Bot]%(reset)s[%(log_color)s%(levelname)s%(reset)s] %(asctime)s %(log_color)s%(message)s%(reset)s"
+logging.root.setLevel(LOG_LEVEL)
+formatter = ColoredFormatter(
+    LOGFORMAT, "%Y-%m-%d %H:%M:%S"
+)  # Specify the date/time format
+stream = logging.StreamHandler()
+stream.setLevel(LOG_LEVEL)
+stream.setFormatter(formatter)
+log = logging.getLogger("pythonConfig")
+log.setLevel(LOG_LEVEL)
+log.addHandler(stream)
+# End of configuration
+# ---------------------------------------------#
 
 SupportedPromoGames = {
     "43e35910-c168-4634-ad4f-52fd764a843f": {
         "name": "Bike Ride 3D in Hamster FAM",
         "appToken": "d28721be-fd2d-4b45-869e-9f253b554e50",
         "promoId": "43e35910-c168-4634-ad4f-52fd764a843f",
-        "delay": 20,
+        "delay": 120,
         "retry_delay": 20,
     },
     "fe693b26-b342-4159-8808-15e3ff7f8767": {
@@ -42,7 +65,7 @@ SupportedPromoGames = {
         "name": "Chain Cube 2024",
         "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
         "promoId": "b4170868-cef0-424f-8eb9-be0622e8e8e3",
-        "delay": 20,
+        "delay": 120,
         "retry_delay": 20,
     },
     "c4480ac7-e178-4973-8061-9ed5b2e17954": {
@@ -52,46 +75,21 @@ SupportedPromoGames = {
         "delay": 120,
         "retry_delay": 20,
     },
-}
-
-# ---------------------------------------------#
-# Telegram Logging
-# By enabling this feature, you will receive logs in your Telegram account.
-# To use this feature, you need to create a bot and obtain the token from @BotFather.
-# Note: Only important logs are sent to Telegram, feel free to include more logs as needed.
-# You can also use this feature to receive logs from a bot running on a server.
-# If you don't want to use this feature, set "is_active" to False and leave "bot_token" and "uid" fields empty.
-# This feature is optional, and you can disable it by setting "is_active" to False.
-telegramBotLogging = {
-    "is_active": False,  # Set it to True if you want to use it, and make sure to fill out the below fields
-    "bot_token": "",  # HTTP API access token from https://t.me/BotFather ~ Start your bot after creating it
-    # Configure the what you want to receive logs from the bot
-    "messages": {
-        "general_info": True,  # General information
-        "account_info": True,  # Account information
-        "http_errors": False,  # HTTP errors
-        "other_errors": False,  # Other errors
-        "daily_cipher": True,  # Daily cipher
-        "daily_task": False,  # Daily task
-        "upgrades": True,  # Upgrades
+    "dc128d28-c45b-411c-98ff-ac7726fbaea4": {
+        "name": "Merge Away",
+        "appToken": "8d1cc2ad-e097-4b86-90ef-7a27e19fb833",
+        "promoId": "dc128d28-c45b-411c-98ff-ac7726fbaea4",
+        "delay": 120,
+        "retry_delay": 20,
     },
+    "61308365-9d16-4040-8bb0-2f4a4c69074c": {
+        "name": "Twerk Race",
+        "appToken": "61308365-9d16-4040-8bb0-2f4a4c69074c",
+        "promoId": "61308365-9d16-4040-8bb0-2f4a4c69074c",
+        "delay": 120,
+        "retry_delay": 20,
+    }, 
 }
-
-# ---------------------------------------------#
-# Logging configuration
-LOG_LEVEL = logging.DEBUG
-# Include date and time in the log format
-LOGFORMAT = "%(log_color)s[Smart HamsterKombat Bot]%(reset)s[%(log_color)s%(levelname)s%(reset)s] %(asctime)s %(log_color)s%(message)s%(reset)s"
-logging.root.setLevel(LOG_LEVEL)
-formatter = ColoredFormatter(LOGFORMAT, "%Y-%m-%d %H:%M:%S")  # Specify the date/time format
-stream = logging.StreamHandler()
-stream.setLevel(LOG_LEVEL)
-stream.setFormatter(formatter)
-log = logging.getLogger("pythonConfig")
-log.setLevel(LOG_LEVEL)
-log.addHandler(stream)
-# End of configuration
-# ---------------------------------------------#
 
 
 class HamsterKombatAccount:
@@ -112,8 +110,14 @@ class HamsterKombatAccount:
         self.telegram_chat_id = AccountData["telegram_chat_id"]
         self.totalKeys = 0
         self.balanceKeys = 0
+        self.configVersion = ""
 
-    def SendTelegramLog(self, message, level):
+    def GetConfig(self, key, default=None):
+        if key in self.config:
+            return self.config[key]
+        return default
+
+    def SendTelegramLog(self, message, level="other_errors"):
         if (
             not telegramBotLogging["is_active"]
             or self.telegram_chat_id == ""
@@ -196,6 +200,9 @@ class HamsterKombatAccount:
                     "http_errors",
                 )
                 return None
+
+            if "config-version" in response.headers:
+                self.configVersion = response.headers["config-version"]
 
             if method == "OPTIONS":
                 return True
@@ -435,8 +442,27 @@ class HamsterKombatAccount:
         # Send GET request
         return self.HttpRequest(url, headers, "GET", 200)
 
-    def MeTelegramRequest(self):
-        url = "https://api.hamsterkombatgame.io/auth/me-telegram"
+    def GetSkins(self):
+        url = "https://api.hamsterkombatgame.io/clicker/get-skin"
+        headers = {
+            "Access-Control-Request-Headers": "authorization,content-type",
+            "Access-Control-Request-Method": "POST",
+        }
+
+        # Send OPTIONS request
+        self.HttpRequest(url, headers, "OPTIONS", 204)
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": self.Authorization,
+            "Content-Type": "application/json",
+        }
+
+        # Send POST request
+        return self.HttpRequest(url, headers, "POST", 200, "{}")
+
+    def AccountInfoTelegramRequest(self):
+        url = "https://api.hamsterkombatgame.io/auth/account-info"
         headers = {
             "Access-Control-Request-Headers": "authorization",
             "Access-Control-Request-Method": "POST",
@@ -502,6 +528,26 @@ class HamsterKombatAccount:
 
         # Send POST request
         return self.HttpRequest(url, headers, "POST", 200)
+
+    def GetAccountConfigVersionRequest(self):
+        if self.configVersion == "":
+            return None
+
+        url = f"https://api.hamsterkombatgame.io/clicker/config/{self.configVersion}"
+        headers = {
+            "Access-Control-Request-Headers": "authorization",
+            "Access-Control-Request-Method": "GET",
+        }
+
+        # Send OPTIONS request
+        self.HttpRequest(url, headers, "OPTIONS", 204)
+
+        headers = {
+            "Authorization": self.Authorization,
+        }
+
+        # Send GET request
+        return self.HttpRequest(url, headers, "GET", 200)
 
     def ClaimDailyCipherRequest(self, DailyCipher):
         url = "https://api.hamsterkombatgame.io/clicker/claim-daily-cipher"
@@ -572,6 +618,25 @@ class HamsterKombatAccount:
 
         return True
 
+    def ListBuyOptions(self, selected_upgrades):
+        log.info(
+            f"[{self.account_name}] List of {self.GetConfig('show_num_buy_options', 0)} best buy options:"
+        )
+        count = 1
+        for selected_card in selected_upgrades:
+            if (
+                "cooldownSeconds" in selected_card
+                and selected_card["cooldownSeconds"] > 0
+            ):
+                continue
+            profitCoefficient = CalculateCardProfitCoefficient(selected_card)
+            log.info(
+                f"[{self.account_name}] {count}: {selected_card['name']}, Profit: {selected_card['profitPerHourDelta']}, Price: {number_to_string(selected_card['price'])}, Coefficient: {int(profitCoefficient)} Level: {selected_card['level']}"
+            )
+            count = count + 1
+            if count > self.GetConfig("show_num_buy_options", 0):
+                break
+
     def BuyBestCard(self):
         log.info(f"[{self.account_name}] Checking for best card...")
         time.sleep(2)
@@ -605,8 +670,26 @@ class HamsterKombatAccount:
             log.warning(f"[{self.account_name}] No upgrades available.")
             return False
 
+        if self.GetConfig("show_num_buy_options", 0) > 0:
+            self.ListBuyOptions(selected_upgrades)
+
         current_selected_card = selected_upgrades[0]
         for selected_card in selected_upgrades:
+            if (
+                "cooldownSeconds" in selected_card
+                and selected_card["cooldownSeconds"] > 0
+                and selected_card["cooldownSeconds"] < 180
+            ):
+                log.warning(
+                    f"[{self.account_name}] {selected_card['name']} is on cooldown and cooldown is less than 180 seconds..."
+                )
+                log.warning(
+                    f"[{self.account_name}] Waiting for {selected_card['cooldownSeconds'] + 2} seconds..."
+                )
+
+                time.sleep(selected_card["cooldownSeconds"] + 2)
+                selected_card["cooldownSeconds"] = 0
+
             if (
                 "cooldownSeconds" in selected_card
                 and selected_card["cooldownSeconds"] > 0
@@ -626,13 +709,21 @@ class HamsterKombatAccount:
                 )
                 continue
 
+            profitCoefficient = CalculateCardProfitCoefficient(selected_card)
+            coefficientLimit = self.config["parallel_upgrades_max_price_per_hour"]
+
             if (
-                CalculateCardProfitCoefficient(selected_card)
-                > self.config["parallel_upgrades_max_price_per_hour"]
+                profitCoefficient > coefficientLimit
                 and self.config["enable_parallel_upgrades"]
             ):
                 log.warning(
                     f"[{self.account_name}] {selected_card['name']} is too expensive to buy in parallel..."
+                )
+                log.warning(
+                    f"[{self.account_name}] Cost is: {int(profitCoefficient)} / coin increase in profit. Cost limit: {coefficientLimit}"
+                )
+                log.warning(
+                    f"[{self.account_name}] Adjust `parallel_upgrades_max_price_per_hour` to change this behaviour"
                 )
                 return False
 
@@ -669,6 +760,8 @@ class HamsterKombatAccount:
 
             return True
 
+        return False
+
     def StartMiniGame(self, AccountConfigData, AccountID):
         if "dailyKeysMiniGame" not in AccountConfigData:
             log.error(f"[{self.account_name}] Unable to get daily keys mini game.")
@@ -679,7 +772,7 @@ class HamsterKombatAccount:
             return
 
         if AccountConfigData["dailyKeysMiniGame"]["isClaimed"] == True:
-            log.info(f"[{self.account_name}] Daily keys mini game already claimed.")
+            log.info(f"\033[1;34m[{self.account_name}] Daily keys mini game already claimed.\033[0m")
             return
 
         if AccountConfigData["dailyKeysMiniGame"]["remainSecondsToNextAttempt"] > 0:
@@ -720,7 +813,7 @@ class HamsterKombatAccount:
             return
 
         if response["dailyKeysMiniGame"]["isClaimed"] == True:
-            log.info(f"[{self.account_name}] Daily keys mini game already claimed.")
+            log.info(f"\033[1;34m[{self.account_name}] Daily keys mini game already claimed.\033[0m")
             return
 
         if "remainSecondsToGuess" not in response["dailyKeysMiniGame"]:
@@ -794,7 +887,7 @@ class HamsterKombatAccount:
             log.info(f"[{self.account_name}] Playground games are disabled.")
             return
 
-        log.info(f"[{self.account_name}] Starting gettting playground games...")
+        log.info(f"[{self.account_name}] Starting getting playground games...")
 
         url = "https://api.hamsterkombatgame.io/clicker/get-promos"
         headers = {
@@ -826,11 +919,25 @@ class HamsterKombatAccount:
             )
             return
 
+        promo_count = 0
         for promo in response["promos"]:
-            if promo[
-                "promoId"
-            ] in SupportedPromoGames and self.CheckPlayGroundGameState(promo, response):
+
+            if promo["promoId"] not in SupportedPromoGames:
+                log.warning(f"[{self.account_name}] Detected unknown playground game: {promo['title']['en']}. Check project github for updates.")
+                continue
+
+            if self.CheckPlayGroundGameState(promo, response):
                 promoData = SupportedPromoGames[promo["promoId"]]
+
+                promo_count += 1
+                if self.GetConfig(
+                    "max_promo_games_per_round", 3
+                ) != 0 and promo_count > self.GetConfig("max_promo_games_per_round", 3):
+                    log.info(
+                        f"[{self.account_name}] Maximum number of playground games reached. We will retrieve other games in the next run."
+                    )
+                    return
+
                 log.info(
                     f"[{self.account_name}] Starting {promoData['name']} Playground game..."
                 )
@@ -880,11 +987,21 @@ class HamsterKombatAccount:
         log.info(f"[{self.account_name}] Getting {promoData['name']} key...")
         url = "https://api.gamepromo.io/promo/login-client"
 
-        headers = {
-            "Content-Type": "application/json; charset=utf-8",
+        headers_option = {
             "Host": "api.gamepromo.io",
             "Origin": "",
             "Referer": "",
+            "access-control-request-headers": "content-type",
+            "access-control-request-method": "POST",
+        }
+
+        self.HttpRequest(url, headers_option, "OPTIONS", 204, True)
+
+        headers = {
+            "Host": "api.gamepromo.io",
+            "Origin": "",
+            "Referer": "",
+            "Content-Type": "application/json; charset=utf-8",
         }
 
         payload = json.dumps(
@@ -931,9 +1048,15 @@ class HamsterKombatAccount:
         response = None
 
         retryCount = 0
-        while retryCount < 5:
+        while retryCount < 15:
             retryCount += 1
             eventID = str(uuid.uuid4())
+
+            headers_option["access-control-request-headers"] = (
+                "authorization,content-type"
+            )
+
+            self.HttpRequest(url, headers_option, "OPTIONS", 204, True)
 
             payload = json.dumps(
                 {
@@ -946,14 +1069,25 @@ class HamsterKombatAccount:
             response = self.HttpRequest(url, headers, "POST", 200, payload, True)
 
             if response is None or not isinstance(response, dict):
-                time.sleep(promoData["delay"] + random.randint(1, 5))
+                time.sleep(promoData["retry_delay"] + random.randint(1, 5))
                 continue
 
             if not response.get("hasCode", False):
-                time.sleep(promoData["delay"] + random.randint(1, 5))
+                time.sleep(promoData["retry_delay"] + random.randint(1, 5))
                 continue
 
             break
+
+        if (
+            response is None
+            or not isinstance(response, dict)
+            or "hasCode" not in response
+        ):
+            log.error(f"[{self.account_name}] Unable to register event.")
+            self.SendTelegramLog(
+                f"[{self.account_name}] Unable to register event.", "other_errors"
+            )
+            return None
 
         log.info(f"[{self.account_name}] Event registered successfully.")
 
@@ -966,6 +1100,10 @@ class HamsterKombatAccount:
             "Origin": "",
             "Referer": "",
         }
+
+        headers_option["access-control-request-headers"] = "authorization,content-type"
+
+        self.HttpRequest(url, headers_option, "OPTIONS", 204, True)
 
         payload = json.dumps(
             {
@@ -989,7 +1127,7 @@ class HamsterKombatAccount:
         ):
             log.error(f"[{self.account_name}] Unable to get {promoData['name']} key.")
             self.SendTelegramLog(
-                f"[{self.account_name}] Unable to get {promoData['name']} key.", 
+                f"[{self.account_name}] Unable to get {promoData['name']} key.",
                 "other_errors",
             )
             return None
@@ -1002,9 +1140,6 @@ class HamsterKombatAccount:
             log.info(f"[{self.account_name}] Playground games are disabled.")
             return False
 
-        if promo["promoId"] not in SupportedPromoGames:
-            return False
-
         if "states" not in promos:
             return True
 
@@ -1014,7 +1149,7 @@ class HamsterKombatAccount:
                 and state["receiveKeysToday"] >= promo["keysPerDay"]
             ):
                 log.info(
-                    f"[{self.account_name}] Playground game {SupportedPromoGames[promo['promoId']]['name']} already claimed."
+                f"\033[1;34m[{self.account_name}] Playground game {SupportedPromoGames[promo['promoId']]['name']} already claimed.\033[0m"
                 )
                 return False
 
@@ -1024,13 +1159,13 @@ class HamsterKombatAccount:
         log.info(f"[{self.account_name}] Starting account...")
 
         log.info(f"[{self.account_name}] Getting basic account data...")
-        AccountBasicData = self.MeTelegramRequest()
+        AccountBasicData = self.AccountInfoTelegramRequest()
 
         if (
             AccountBasicData is None
             or AccountBasicData is False
-            or "telegramUser" not in AccountBasicData
-            or "id" not in AccountBasicData["telegramUser"]
+            or "accountInfo" not in AccountBasicData
+            or "id" not in AccountBasicData["accountInfo"]
         ):
             log.error(f"[{self.account_name}] Unable to get account basic data.")
             self.SendTelegramLog(
@@ -1040,20 +1175,23 @@ class HamsterKombatAccount:
             return
 
         log.info(
-            f"\033[1;35m[{self.account_name}] Account ID: {AccountBasicData['telegramUser']['id']}, Account detected as bot: {AccountBasicData['telegramUser']['isBot']}\033[0m"
+            f"\033[1;35m[{self.account_name}] Account ID: {AccountBasicData['accountInfo']['id']}, Account Name: {AccountBasicData['accountInfo']['name']}\033[0m"
         )
         self.SendTelegramLog(
-            f"[{self.account_name}] Account ID: {AccountBasicData['telegramUser']['id']}, Account detected as bot: {AccountBasicData['telegramUser']['isBot']}",
+            f"[{self.account_name}] Account ID: {AccountBasicData['accountInfo']['id']}",
             "account_info",
         )
 
         log.info(f"[{self.account_name}] Getting account config data...")
+        AccountConfigVersionData = None
+        if self.configVersion != "":
+            AccountConfigVersionData = self.GetAccountConfigVersionRequest()
+            log.info(
+                f"[{self.account_name}] Account config version: {self.configVersion}"
+            )
+
         AccountConfigData = self.GetAccountConfigRequest()
-        if (
-            AccountConfigData is None
-            or AccountConfigData is False
-#            or "clickerConfig" not in AccountConfigData
-        ):
+        if AccountConfigData is None or AccountConfigData is False:
             log.error(f"[{self.account_name}] Unable to get account config data.")
             self.SendTelegramLog(
                 f"[{self.account_name}] Unable to get account config data.",
@@ -1117,6 +1255,14 @@ class HamsterKombatAccount:
             )
             return
 
+        log.info(f"[{self.account_name}] Getting account skins...")
+        SkinsData = self.GetSkins()
+        if SkinsData is None:
+            log.error(f"[{self.account_name}] Failed to get skins.")
+            self.SendTelegramLog(
+                f"[{self.account_name}] Failed to get skins.", "other_errors"
+            )
+
         log.info(
             f"[{self.account_name}] IP: {ipResponse['ip']} Company: {ipResponse['asn_org']} Country: {ipResponse['country_code']}"
         )
@@ -1124,9 +1270,7 @@ class HamsterKombatAccount:
         if self.config["auto_finish_mini_game"]:
             log.info(f"[{self.account_name}] Attempting to finish mini game...")
             time.sleep(1)
-            self.StartMiniGame(
-                AccountConfigData, AccountBasicData["telegramUser"]["id"]
-            )
+            self.StartMiniGame(AccountConfigData, AccountBasicData["accountInfo"]["id"])
 
         # Start tapping
         if self.config["auto_tap"]:
@@ -1194,8 +1338,10 @@ class HamsterKombatAccount:
             log.info(f"[{self.account_name}] Checking for available task...")
             selected_task = None
             for task in tasksResponse["tasks"]:
-                link = task.get("link", "")
-                if task["isCompleted"] == False and ("https://" in link):
+                TaskType = task.get("type", "")
+                if task["isCompleted"] == False and (
+                    TaskType == "WithLink" or TaskType == "WithLocaleLink"
+                ):
                     log.info(
                         f"[{self.account_name}] Attempting to complete Youtube Or Twitter task..."
                     )
@@ -1304,6 +1450,12 @@ class HamsterKombatAccount:
 
             balanceCoins -= current_selected_card["price"]
 
+            if balanceCoins <= self.config["auto_upgrade_min"]:
+                log.warning(
+                    f"[{self.account_name}] Upgrade purchase would decrease balance below minimum limit, aborting."
+                )
+                return
+
             log.info(f"[{self.account_name}] Attempting to buy an upgrade...")
             time.sleep(2)
             upgradesResponse = self.BuyUpgradeRequest(current_selected_card["id"])
@@ -1362,6 +1514,7 @@ def RunAccounts():
             log.error(f"Rechecking all accounts in {AccountsRecheckTime} seconds...")
             time.sleep(AccountsRecheckTime)
 
+
 def main():
     log.info("------------------------------------------------------------------------")
     log.info("------------------------------------------------------------------------")
@@ -1370,7 +1523,7 @@ def main():
         "\033[1;34mProject Github: https://github.com/limbonux/SmartHamsterKombatBot\033[0m"
     )
     log.info("\033[1;33mDeveloped by: limbonux\033[0m")
-    log.info("\033[1;35mVersion: 2.2\033[0m")
+    log.info("\033[1;35mVersion: 2.3\033[0m")
     log.info("\033[1;36mTo stop the bot, press Ctrl + C\033[0m")
     log.info("------------------------------------------------------------------------")
     log.info("------------------------------------------------------------------------")
