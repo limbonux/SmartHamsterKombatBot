@@ -42,7 +42,7 @@ AccountList = [
             # This feature will stop buying upgrades when the balance is less than the price of the best card.
             "wait_for_best_card": True,  # Recommended to keep it True for high-level accounts
             "enable_parallel_upgrades": True,  # Enable parallel card upgrades. This will buy cards in parallel if the best card is on cooldown. It should speed up the profit.
-            "parallel_upgrades_max_price_per_hour": 1000,  # Cards with less than X coins per 1k will be bought
+            "parallel_upgrades_max_price_per_hour": 6000,  # Cards with less than X coins per 1k will be bought
             "show_num_buy_options": 0,  # Number of card buy options to show in the logs, ranked by best value, 0 disables this.
             "max_promo_games_per_round": 3,  # Maximum number of promo games to play in a single round, 0 disables this.
         },
@@ -71,7 +71,6 @@ AccountList = [
     #         "auto_get_daily_task": True,  # Enable auto-get daily tasks by setting it to True, or set it to False to disable
     #         "auto_get_task": True,  # Enable auto get (Youtube/Twitter and ...) task to True, or set it to False to disable
     #         "auto_finish_mini_game": False,  # Enable auto finish mini game by setting it to True, or set it to False to disable
-    #         "auto_claim_daily_combo": True,  # Enable auto claim daily combo by setting it to True, or set it to False to disable
     #         "auto_daily_combo_enable": False,  # Enable auto daily combo by setting it to True, or set it to False to disable
     #         "auto_daily_combo_max_price": 5_000_000,  # Maximum price of combo for purchase
     #         "auto_playground_games": True,  # Enable auto playground games by setting it to True, or set it to False to disable
@@ -85,7 +84,7 @@ AccountList = [
     #         # This feature will stop buying upgrades when the balance is less than the price of the best card.
     #         "wait_for_best_card": True,  # Recommended to keep it True for high-level accounts
     #         "enable_parallel_upgrades": True,  # Enable parallel card upgrades. This will buy cards in parallel if the best card is on cooldown. It should speed up the profit.
-    #         "parallel_upgrades_max_price_per_hour": 1000,  # Cards with less than X coins per 1k will be bought
+    #         "parallel_upgrades_max_price_per_hour": 6000,  # Cards with less than X coins per 1k will be bought
     #         "show_num_buy_options": 0,  # Number of card buy options to show in the logs, ranked by best value, 0 disables this.
     #         "max_promo_games_per_round": 3,  # Maximum number of promo games to play in a single round, 0 disables this.
     #     },
